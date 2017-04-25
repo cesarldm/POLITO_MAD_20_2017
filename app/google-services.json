@@ -1,0 +1,86 @@
+{
+  "project_info": {
+    "project_number": "412188813719",
+    "firebase_url": "https://moneygram-1ce3b.firebaseio.com",
+    "project_id": "moneygram-1ce3b",
+    "storage_bucket": "moneygram-1ce3b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:412188813719:android:1d051a0f010a36da",
+        "android_client_info": {
+          "package_name": "com.polito.mad_20_2017"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "412188813719-d3ldeh6hc6tftfd3c0k009cksfkbu49v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-nAsTMwxfumcLeeY1C1kyB-MgtacPvRY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:412188813719:android:ac83c1a99ee72ad9",
+        "android_client_info": {
+          "package_name": "com.polito.cesarldm.polito_mad_20_2017"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "412188813719-3385lu5urbqpgr57hibia5u91djva7i3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.polito.cesarldm.polito_mad_20_2017",
+            "certificate_hash": "250d5df8ccf7f8b2881595e6cf6e3493297ac9e4"
+          }
+        },
+        {
+          "client_id": "412188813719-d3ldeh6hc6tftfd3c0k009cksfkbu49v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-nAsTMwxfumcLeeY1C1kyB-MgtacPvRY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "412188813719-d3ldeh6hc6tftfd3c0k009cksfkbu49v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
