@@ -78,12 +78,12 @@ public class GroupListActivity extends AppCompatActivity implements View.OnClick
                 // ...
             }
         };
-        DatabaseReference databaseOwnMember= mDatabase.getReference("Member/"+uId);
-        databaseOwnMember.addValueEventListener(new ValueEventListener() {
-
+       // DatabaseReference databaseOwnMember= mDatabase.getReference("Member/"+uId);
+        DatabaseReference databaseRefToda = mDatabase.getReference();
+        databaseRefToda.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Iterable<DataSnapshot> children = dataSnapshot.child("GroupsList").getChildren();
+                Iterable<DataSnapshot> children = dataSnapshot.child("Member").child(mUser.getUid()).child("groupList").getChildren();
                 //clean arrays not to duplicate list
                 groupids.clear();
                 groupList.clear();
@@ -92,16 +92,22 @@ public class GroupListActivity extends AppCompatActivity implements View.OnClick
                         String newGroupId = child.getValue(String.class);
                         groupids.add(newGroupId);
                     }
-                    //funcion que teniendo los ids recoge los grupos del usuario
-                    groupList=getGroups(groupids);
+                    Iterable<DataSnapshot> children2 = dataSnapshot.child("Group").getChildren();
+                    ArrayList<Group>tempGroupList=new ArrayList<Group>();
+                    if (children2 != null) {
+                        for (DataSnapshot child : children2) {
+                            Group newGroup = child.getValue(Group.class);
+                            for(int i=0;i<groupids.size();i++){
+                                if(newGroup.getId().equals(groupids.get(i))){
+                                    tempGroupList.add(newGroup);
+                                }
+                            }
+                        }
+                    }
+                    //fill list view
+                    CustomAdapter adapter = new CustomAdapter(GroupListActivity.this, tempGroupList);
+                    lvGroup.setAdapter(adapter);
                 }
-                //fill list view
-
-
-                Group g1=new Group("Grupo estatico");
-                groupList.add(g1);
-                CustomAdapter adapter=new CustomAdapter(GroupListActivity.this,groupList);
-                lvGroup.setAdapter(adapter);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -109,6 +115,7 @@ public class GroupListActivity extends AppCompatActivity implements View.OnClick
             }
 
         });
+
 
 
 

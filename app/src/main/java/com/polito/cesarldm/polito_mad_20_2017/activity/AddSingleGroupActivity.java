@@ -40,17 +40,23 @@ public class AddSingleGroupActivity extends AppCompatActivity implements View.On
     String saveName;
     double saveBudget;
     Group newGroup;
-    String text1 = "Introduce a valid budget", text2 = "Introduce a valid name";
-    int duration = Toast.LENGTH_SHORT;
+
+    MemberArrayAdapter adapter;
     ArrayList<Member> memberList = new ArrayList<Member>();
     ArrayList<Member>List =new ArrayList<Member>();
     ArrayList<String> selectedUsers= new ArrayList<String>();
+
+    ArrayList<String> tempGroupList=new ArrayList<String>();
+
     String newId;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseDatabase mFirebaseDataBase;
+    private DatabaseReference newMemberRef;
     private DatabaseReference myRef;
+    private boolean groupAded=false;
+    private boolean memberAded=true;
 
 
     @Override
@@ -62,14 +68,15 @@ public class AddSingleGroupActivity extends AppCompatActivity implements View.On
         budget = (EditText) findViewById(R.id.budget);
         doneBtn = (Button) findViewById(R.id.donebtn);
         doneBtn.setOnClickListener(this);
+
         lv=(ListView)findViewById(R.id.listViewUser);
         lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
+
         mFirebaseDataBase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDataBase.getReference();
+
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
-
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -84,15 +91,13 @@ public class AddSingleGroupActivity extends AppCompatActivity implements View.On
                 // ...
             }
         };
-
-
-        myRef.addValueEventListener(new ValueEventListener() {
+        newMemberRef=mFirebaseDataBase.getReference("Member");
+        newMemberRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-                memberList=populateUserList(dataSnapshot);
-                MemberArrayAdapter adapter= new MemberArrayAdapter(AddSingleGroupActivity.this,memberList);
-                lv.setAdapter(adapter);
+                if(memberAded==true) {
+                   populateUserList(dataSnapshot);
+                }
             }
 
             @Override
@@ -100,19 +105,27 @@ public class AddSingleGroupActivity extends AppCompatActivity implements View.On
 
             }
         });
+        myRef = mFirebaseDataBase.getReference();
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if(groupAded==true){
+                    getUserGroupList(dataSnapshot);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                LinearLayout ll = (LinearLayout) view; // get the parent layout view
-                CheckedTextView tv = (CheckedTextView) ll.findViewById(R.id.textViewUserMail); // get the child text view
-                final String selectedItem = tv.getText().toString();
-                tv.setCheckMarkDrawable(R.drawable.ic_check_box_white_24dp);
-                if(selectedUsers.contains(selectedItem)){
-                    selectedUsers.remove(selectedItem);
-                    tv.setCheckMarkDrawable(R.drawable.ic_check_box_outline_blank_white_24dp);
-                } else selectedUsers.add(selectedItem);
-
+               populateSelectedList(view);
             }
         });
     }
@@ -121,74 +134,46 @@ public class AddSingleGroupActivity extends AppCompatActivity implements View.On
     public void onClick(View v) {
 
         if (v == doneBtn) {
-            saveName = nameGroup.getText().toString().trim();
-
-
                 if (budget.getText().toString().length() == 0) {
                     toastMessage("Add Budget");
-
-
             } else if(nameGroup.getText().toString().length()==0){
                     toastMessage("Add nameGroup");
-
                 } else {
                 if ((budget.getText().toString().length() != 0) && (nameGroup.getText().toString().length() != 0)) {
-                    DatabaseReference groupRef=mFirebaseDataBase.getReference("Group");
-                    newId=groupRef.push().getKey();
-                    updateUserInfo(newId);
-                    showSelected();
-                    double selectedBudget= Double.parseDouble(budget.getText().toString());
-
-                    String selectedName=nameGroup.getText().toString().trim();
-                    Group newGroup=new Group(selectedName,selectedBudget,newId,selectedUsers);
-                    groupRef.child(newId).setValue(newGroup);
-                    toastMessage("Group Added!");
-
-
-
+                   addGroup();
                 }
 
             }
         }
+    }
+
+    public void populateSelectedList(View view){
+        LinearLayout ll = (LinearLayout) view; // get the parent layout view
+        CheckedTextView tv = (CheckedTextView) ll.findViewById(R.id.textViewUserMail);
+        TextView usId=(TextView)ll.findViewById(R.id.textViewUserId);// get the child text view
+        final String selectedItem = usId.getText().toString();
+        tv.setCheckMarkDrawable(R.drawable.ic_check_box_white_24dp);
+        if(selectedUsers.contains(selectedItem)){
+            selectedUsers.remove(selectedItem);
+            tv.setCheckMarkDrawable(R.drawable.ic_check_box_outline_blank_white_24dp);
+        } else selectedUsers.add(selectedItem);
+
 
     }
 
-    public ArrayList<Member> populateUserList(DataSnapshot dataSnapshot) {
+    public void populateUserList(DataSnapshot dataSnapshot) {
         List.clear();
         for (DataSnapshot ds : dataSnapshot.getChildren()) {
-             DatabaseReference userRef = mFirebaseDataBase.getReference("Member");
-            userRef.addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    Member newMember = dataSnapshot.getValue(Member.class);
+
+                    Member newMember = ds.getValue(Member.class);
                     List.add(newMember);
 
-                }
-
-                @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                }
-
-                @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                }
-
-                @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
-
         }
-        return List;
+        MemberArrayAdapter adapter= new MemberArrayAdapter(AddSingleGroupActivity.this,List);
+        lv.setAdapter(adapter);
+
+        groupAded=false;
+
     }
 
     public void toastMessage(String st){
@@ -205,50 +190,43 @@ public class AddSingleGroupActivity extends AppCompatActivity implements View.On
 
     }
 
-    public void updateUserInfo(String newId){
-        final String udtusrId=newId;
-        int size=selectedUsers.size();
-        final DatabaseReference updateMemberRef=mFirebaseDataBase.getReference("Member");
+   public void getUserGroupList(DataSnapshot dataSnapshot) {
+       int i;
+       for(i=selectedUsers.size()-1; i>=0;i--){
+           tempGroupList.clear();
+            String userId=selectedUsers.get(i).trim();
+           Member newMember=dataSnapshot.child("Member").child(userId).getValue(Member.class);
+           if(newMember.getGroupList()==null){
+               tempGroupList.add(newId);
+           }else {
+               tempGroupList = newMember.getGroupList();
+               tempGroupList.add(newId);
+           }
+           updateUserInfo(tempGroupList,userId);
+       }
+       groupAded=false;
+   }
 
-        do{
-            String a=selectedUsers.get(size-1);
-            updateMemberRef.orderByChild("email").equalTo(a).addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
-                    Member updatedMember = dataSnapshot.getValue(Member.class);
-                    updatedMember.addGroup(udtusrId);
-                    updateMemberRef.setValue(updatedMember);
-                }
-
-                @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                }
-
-                @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                }
-
-                @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-
-                // ...
-            });
-
-            size--;
+   public void addGroup(){
+       DatabaseReference groupRef=mFirebaseDataBase.getReference("Group");
+       newId=groupRef.push().getKey().toString().trim();
+       //Aqui se llama al on create
+       showSelected();
+       saveName = nameGroup.getText().toString().trim();
+       double selectedBudget= Double.parseDouble(budget.getText().toString());
+       Group newGroup=new Group(saveName,selectedBudget,newId,selectedUsers);
+       groupRef.child(newId).setValue(newGroup);
+       //aqui se vuelve a llamar al ondatachange
+       groupAded=true;
+       toastMessage("Group Added!");
+   }
 
 
-        }while(size!=0);
+    public void updateUserInfo(ArrayList<String> updatedGroupList, String userId){
 
-        toastMessage("exit loop do while");
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference("Member/"+userId+"/groupList");
+        ref.setValue(updatedGroupList);
     }
 
     }

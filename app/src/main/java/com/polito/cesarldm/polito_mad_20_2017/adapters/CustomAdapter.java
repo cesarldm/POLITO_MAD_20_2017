@@ -50,9 +50,9 @@ public class CustomAdapter extends ArrayAdapter<Group> {
         //Otherwise
         ViewHolder holder=new ViewHolder();
         //initialite views
-        holder.textview= (TextView) convertView.findViewById(R.id.editText);
-        holder.textview2=(TextView) convertView.findViewById(R.id.textView2);
-        holder.imageView=(ImageView) convertView.findViewById(R.id.imageButton);
+        holder.textview= (TextView) convertView.findViewById(R.id.tvName);
+        holder.textview2=(TextView) convertView.findViewById(R.id.tvBudget);
+        holder.imageView=(ImageView) convertView.findViewById(R.id.ivitemlist);
         //asign them data
         holder.textview.setText(groups.get(position).getName());
         Double a =groups.get(position).getBudget();
