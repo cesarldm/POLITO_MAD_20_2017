@@ -29,7 +29,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-
+import java.util.Objects;
 
 
 public class AddSingleGroupActivity extends AppCompatActivity implements View.OnClickListener {
@@ -159,6 +159,7 @@ public class AddSingleGroupActivity extends AppCompatActivity implements View.On
         } else selectedUsers.add(selectedItem);
 
 
+
     }
 
     public void populateUserList(DataSnapshot dataSnapshot) {
@@ -166,9 +167,13 @@ public class AddSingleGroupActivity extends AppCompatActivity implements View.On
         for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
                     Member newMember = ds.getValue(Member.class);
-                    List.add(newMember);
-
+            String debugA=newMember.getId();
+            String debugB=mAuth.getCurrentUser().getUid();
+            if(!debugA.equals(debugB)){
+                List.add(newMember); //we don't want the logged in user appear in the list, will be added automatically
+            }
         }
+
         MemberArrayAdapter adapter= new MemberArrayAdapter(AddSingleGroupActivity.this,List);
         lv.setAdapter(adapter);
 
@@ -205,6 +210,8 @@ public class AddSingleGroupActivity extends AppCompatActivity implements View.On
            updateUserInfo(tempGroupList,userId);
        }
        groupAded=false;
+       selectedUsers.clear();
+
    }
 
    public void addGroup(){
@@ -214,6 +221,7 @@ public class AddSingleGroupActivity extends AppCompatActivity implements View.On
        showSelected();
        saveName = nameGroup.getText().toString().trim();
        double selectedBudget= Double.parseDouble(budget.getText().toString());
+       selectedUsers.add(mAuth.getCurrentUser().getUid());//añadimos al usuario logeado
        Group newGroup=new Group(saveName,selectedBudget,newId,selectedUsers);
        groupRef.child(newId).setValue(newGroup);
        //aqui se vuelve a llamar al ondatachange
