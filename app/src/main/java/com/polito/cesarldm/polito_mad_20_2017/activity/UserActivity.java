@@ -66,6 +66,8 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
+                    finish();
+                    startActivity(new Intent(getApplicationContext(), LogInActivity.class));
                 }
                 // ...
             }
@@ -170,8 +172,7 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
 
     private void logOutUser() {
         mAuth.signOut();
-        finish();
-        startActivity(new Intent(getApplicationContext(), LogInActivity.class));
+
     }
     public void toastMessage(String st){
         Toast.makeText(this,st,Toast.LENGTH_SHORT).show();

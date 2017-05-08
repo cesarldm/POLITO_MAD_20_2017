@@ -10,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
@@ -48,8 +50,8 @@ public class GroupListActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_list);
         firebaseAuth=FirebaseAuth.getInstance();
-        mUser=firebaseAuth.getCurrentUser();
-        String uId=mUser.getUid();
+        checkUserAuth();
+        //String uId=mUser.getUid();
         menu1=(Toolbar)findViewById(R.id.toolbar3);
         menu1.setTitle("My Groups");
         mDatabase=FirebaseDatabase.getInstance();
@@ -74,6 +76,7 @@ public class GroupListActivity extends AppCompatActivity implements View.OnClick
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                     toastMessage("Signed Out!");
                     goToLoginActivity();
+                    finish();
                 }
                 // ...
             }
@@ -100,6 +103,7 @@ public class GroupListActivity extends AppCompatActivity implements View.OnClick
                             for(int i=0;i<groupids.size();i++){
                                 if(newGroup.getId().equals(groupids.get(i))){
                                     tempGroupList.add(newGroup);
+                                    groupList.add(newGroup);
                                 }
                             }
                         }
@@ -122,6 +126,22 @@ public class GroupListActivity extends AppCompatActivity implements View.OnClick
         fab=(FloatingActionButton)findViewById(R.id.fabADDGROUP);
         fab.setOnClickListener(this);
 
+
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        lvGroup.setOnItemClickListener(new OnGroupSelected());
+    }
+
+
+    private void checkUserAuth() {
+        mUser=firebaseAuth.getCurrentUser();
+        if(mUser==null){
+            goToLoginActivity();
+
+        }
+        return;
 
     }
 
@@ -205,4 +225,20 @@ public class GroupListActivity extends AppCompatActivity implements View.OnClick
         Toast.makeText(this,st,Toast.LENGTH_SHORT).show();
 
     }
+
+    class OnGroupSelected implements AdapterView.OnItemClickListener{
+        @Override
+        public void onItemClick(AdapterView<?>parent,View view,int position,long id){
+            ViewGroup vg=(ViewGroup) view;
+            String passId=groupList.get(position).getId();
+            Intent groupIntent = new Intent(GroupListActivity.this, GroupActivity.class);
+            groupIntent.putExtra("Id",passId);
+            startActivity(groupIntent);
+
+
+
+        }
+
+    }
 }
+

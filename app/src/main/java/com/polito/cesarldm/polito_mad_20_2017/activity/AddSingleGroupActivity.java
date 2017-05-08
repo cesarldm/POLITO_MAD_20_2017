@@ -49,7 +49,7 @@ public class AddSingleGroupActivity extends AppCompatActivity implements View.On
     ArrayList<String> tempGroupList=new ArrayList<String>();
 
     String newId;
-
+    private FirebaseUser fUser;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseDatabase mFirebaseDataBase;
@@ -76,12 +76,14 @@ public class AddSingleGroupActivity extends AppCompatActivity implements View.On
         mFirebaseDataBase = FirebaseDatabase.getInstance();
 
         mAuth = FirebaseAuth.getInstance();
+        fUser=mAuth.getCurrentUser();
         FirebaseUser user = mAuth.getCurrentUser();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
+                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
+
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                 } else {
@@ -135,11 +137,11 @@ public class AddSingleGroupActivity extends AppCompatActivity implements View.On
 
         if (v == doneBtn) {
                 if (budget.getText().toString().length() == 0) {
-                    toastMessage("Add Budget");
-            } else if(nameGroup.getText().toString().length()==0){
+                    budget.setText("0");
+            } if(nameGroup.getText().toString().length()==0 || nameGroup.getText().toString().equals(" ")){
                     toastMessage("Add nameGroup");
                 } else {
-                if ((budget.getText().toString().length() != 0) && (nameGroup.getText().toString().length() != 0)) {
+                if (nameGroup.getText().toString().length() != 0) {
                    addGroup();
                 }
 
@@ -222,7 +224,7 @@ public class AddSingleGroupActivity extends AppCompatActivity implements View.On
        saveName = nameGroup.getText().toString().trim();
        double selectedBudget= Double.parseDouble(budget.getText().toString());
        selectedUsers.add(mAuth.getCurrentUser().getUid());//añadimos al usuario logeado
-       Group newGroup=new Group(saveName,selectedBudget,newId,selectedUsers);
+       Group newGroup=new Group(saveName,selectedBudget,newId,selectedUsers,fUser.getUid());
        groupRef.child(newId).setValue(newGroup);
        //aqui se vuelve a llamar al ondatachange
        groupAded=true;

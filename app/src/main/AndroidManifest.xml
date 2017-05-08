@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.polito.cesarldm.polito_mad_20_2017">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -18,18 +20,17 @@
         </activity>
         <activity
             android:name=".activity.LogInActivity"
-            android:label="Log In"
-            />
+            android:label="Log In" />
         <activity
             android:name=".activity.UserActivity"
-            android:label="User Info"
-            />
+            android:label="User Info" />
         <activity
             android:name=".activity.AddSingleGroupActivity"
             android:label="Add new group"
-            android:windowSoftInputMode="adjustPan"
-
-            />
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activity.GroupActivity"
+            android:label="@string/title_activity_group"></activity>
     </application>
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+
 </manifest>

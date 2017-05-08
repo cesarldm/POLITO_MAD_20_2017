@@ -13,17 +13,19 @@ import java.util.UUID;
 @SuppressWarnings("serial")
 public class Group implements Serializable {
     public String name;
+    public String creator;
     public double budget;
     ArrayList<String> memberList;
-    ArrayList<Expense> expenseList;
+    ArrayList<String> expenseList;
     String id ;
 
 
-    public Group(String name, double budget, String id, ArrayList<String> memberList) {
+    public Group(String name, double budget, String id, ArrayList<String> memberList,String creator) {
         this.name = name;
         this.budget = budget;
         this.id=id;
         this.memberList=memberList;
+        this.creator=creator;
 
     }
     public Group(){
@@ -37,12 +39,29 @@ public class Group implements Serializable {
         this.memberList = memberList;
     }
 
-public Group (String name){
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
+    }
+
+    public Group (String name){
     this.name= name;
     this.budget=0;
+
 }
 
-   public String getId(){
+    public ArrayList<String> getExpenseList() {
+        return expenseList;
+    }
+
+    public void setExpenseList(ArrayList<String> expenseList) {
+        this.expenseList = expenseList;
+    }
+
+    public String getId(){
        return id;
    }
 
@@ -73,9 +92,7 @@ public Group (String name){
         this.name = name;
     }
 
-    public void addExpense(Expense e){
-        expenseList.add(e);
-    }
+
 
 
 
