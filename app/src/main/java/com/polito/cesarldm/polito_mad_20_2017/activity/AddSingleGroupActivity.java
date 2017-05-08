@@ -168,7 +168,7 @@ public class AddSingleGroupActivity extends AppCompatActivity implements View.On
         List.clear();
         for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
-                    Member newMember = ds.getValue(Member.class);
+            Member newMember = ds.getValue(Member.class);
             String debugA=newMember.getId();
             String debugB=mAuth.getCurrentUser().getUid();
             if(!debugA.equals(debugB)){

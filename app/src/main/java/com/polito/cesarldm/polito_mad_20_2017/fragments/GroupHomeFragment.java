@@ -140,9 +140,8 @@ public class GroupHomeFragment extends Fragment implements View.OnClickListener 
 
     private void getUserExpenseList(DataSnapshot dataSnapshot) {
         tempExpenseList.clear();
-
             String userId=mUser.getUid();
-            Member newMember=dataSnapshot.child("Member").child(userId).getValue(Member.class);
+            Member newMember= dataSnapshot.child("Member").child(userId).getValue(Member.class);
             if(newMember.getExpensesList()==null){
                 tempExpenseList.add(newId);
             }else {

@@ -13,21 +13,34 @@ public class Member implements Serializable {
     public double spent;
     public String id;
     public String email;
-    public ArrayList<String> expenseList;
-    public ArrayList<String> groupList;
+     ArrayList<String> expensesList;
+     ArrayList<String> groupList;
 
     public Member(){}
+
+    public Member(String name, double spent, String id, String email, ArrayList<String> expensesList, ArrayList<String> groupList) {
+        this.name = name;
+        this.spent = spent;
+        this.id = id;
+        this.email = email;
+        this.expensesList = expensesList;
+        this.groupList = groupList;
+    }
+
     public Member(String id) {
         super();
         this.id = id;
     }
 
     public ArrayList<String> getExpensesList() {
-        return expenseList;
+        return expensesList;
+    }
+    public ArrayList<String> getGroupList() {
+        return groupList;
     }
 
-    public void setExpensesList(ArrayList<String> expensesList) {
-        this.expenseList = expensesList;
+    public void setExpenseList(ArrayList<String> expensesList) {
+        this.expensesList = expensesList;
     }
 
     public Member(String id, String email) {
@@ -65,9 +78,7 @@ public class Member implements Serializable {
     }
 
 
-    public ArrayList<String> getGroupList() {
-        return groupList;
-    }
+
 
     public void setId(String id){
         this.id=id;
