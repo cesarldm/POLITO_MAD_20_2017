@@ -39,7 +39,7 @@ public class Expense {
         this.name = name;
         this.cost = cost;
         this.who=who;
-       this.date= DateFormat.getDateTimeInstance().format(new Date());
+       this.date= DateFormat.getDateInstance().format(new Date());
         this.id=id;
     }
 

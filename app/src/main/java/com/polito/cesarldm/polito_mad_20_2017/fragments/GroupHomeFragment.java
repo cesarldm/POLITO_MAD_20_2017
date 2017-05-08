@@ -172,7 +172,7 @@ public class GroupHomeFragment extends Fragment implements View.OnClickListener 
         double amount=Double.parseDouble(etAmount.getText().toString().trim());
         DatabaseReference expenseRef=mDatabase.getReference("Expense");
         newId=expenseRef.push().getKey().toString().trim();
-        Expense newExpense=new Expense(name,amount,mUser.getUid(),newId);
+        Expense newExpense=new Expense(name,amount,mUser.getEmail(),newId);
         expenseRef.child(newId).setValue(newExpense);
         expenseAdded=true;
     }
